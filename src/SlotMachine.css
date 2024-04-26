@@ -1,0 +1,112 @@
+/* Improved Slot Machine CSS */
+.slot-machine {
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(to bottom, #f8ffae, #43c6ac); /* Vibrant gradient */
+    border-radius: 25px;
+    max-width: 650px;
+    margin: 40px auto;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    padding-bottom: 100px;
+}
+
+.reels {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.reel {
+    width: 120px;
+    height: 120px;
+    border: 6px solid #ffe47a; /* Gold border for luxury feel */
+    border-radius: 15px;
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em; /* Increase symbol size */
+    background-color: #ffffff;
+    box-shadow: inset 0 0 15px #000000;
+    transition: transform 0.6s ease-out;
+}
+
+.spin-animation {
+    animation: spin 0.6s ease-out infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(360deg); }
+}
+
+button {
+    cursor: pointer;
+    padding: 15px 30px;
+    background-color: #fc4a1a; /* Exciting button colors */
+    background-image: linear-gradient(to bottom right, #f7b733, #fc4a1a);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase; /* Stylish font */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background-color: #f7b733;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+button:active {
+    transform: translateY(4px);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.controls {
+    position: relative; /* Changed from absolute to relative */
+    margin-top: 80px; /* Increase margin-top to provide space for an expanded message container */
+    display: flex;
+    justify-content: space-around; /* This will space out the controls evenly */
+    gap: 10px; /* You can adjust this gap for more fine-tuned spacing */
+    margin-top: 20px;
+}
+
+.message-container {
+    min-height: 60px; /* Allows container to grow */
+    padding: 10px 20px; /* Padding for text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    background: #f8ffae; /* Match the slot machine background */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #2c3e50; /* Darker text for visibility */
+    font-size: 1em; /* Adjust text size if needed */
+    font-weight: bold;
+}
+
+
+/* Additional styles for the overall page background and title */
+body {
+    background-color: #ebf5fb; /* Light blue background for a soothing effect */
+    font-family: 'Arial', sans-serif;
+}
+
+h1 {
+    color: #333;
+    text-shadow: 2px 2px 5px #aaa;
+    text-align: center;
+    margin-top: 0;
+    font-size: 2.5em;
+    padding: 20px;
+}
