@@ -206,3 +206,42 @@ h1 {
         font-size: 1em;
     }
 }
+
+media (max-width: 480px) {
+    .slot-machine {
+        padding: 5px;
+        max-width: 100%;  /* Use full width for very small screens */
+        background-size: cover; /* Ensure the background covers the reduced area */
+    }
+
+    .reels {
+        margin: 20px 0; /* Reduced margin to save space */
+    }
+
+    .reel {
+        width: 60px;  /* Further reduce reel size for very small screens */
+        height: 60px;
+        margin: 0 5px; /* Reduce margin between reels */
+        font-size: 2em; /* Smaller icons */
+        border-width: 3px; /* Smaller border for the reels */
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px; /* Reduce the gap to make better use of space */
+    }
+
+    button {
+        padding: 6px 15px; /* Smaller buttons to fit the interface */
+        font-size: 12px; /* Smaller font size for readability on small devices */
+    }
+
+    .message-container {
+        font-size: 0.7em; /* Reduce font size to fit smaller screens */
+    }
+
+    .rules-button, .button {
+        width: 90%; /* Make buttons wider to fill the space */
+    }
+}
