@@ -160,6 +160,9 @@ h1 {
 
     .message-container {
         font-size: 0.8em;
+        padding: 5px 10px; /* Adjusted padding */
+        width: 100%; /* Full width to prevent overflow */
+        box-sizing: border-box; /* Include padding in width calculation */
     }
 }
 
@@ -182,6 +185,9 @@ h1 {
 
     .message-container {
         font-size: 0.9em;
+        padding: 8px 15px; /* Slightly larger padding than mobile */
+        width: 95%; /* Adjust width to give some breathing room */
+        box-sizing: border-box; /* Include padding in width calculation */
     }
 }
 
@@ -204,10 +210,14 @@ h1 {
 
     .message-container {
         font-size: 1em;
+        padding: 10px 20px; /* Ample padding for desktop visibility */
+        width: 80%; /* Less than 100% to maintain a manageable size */
+        box-sizing: border-box; /* Include padding in width calculation */
+        margin: auto; /* Center the container on large screens */
     }
 }
 
-media (max-width: 480px) {
+@media (max-width: 480px) {
     .slot-machine {
         padding: 5px;
         max-width: 100%;  /* Use full width for very small screens */
@@ -239,6 +249,9 @@ media (max-width: 480px) {
 
     .message-container {
         font-size: 0.7em; /* Reduce font size to fit smaller screens */
+        padding: 5px 10px; /* Adjust padding to ensure content fits within container */
+        width: 100%; /* Ensure it does not exceed the screen width */
+        box-sizing: border-box; /* Include padding and border in the element's total width */
     }
 
     .rules-button, .button {
