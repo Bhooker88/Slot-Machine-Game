@@ -1,34 +1,37 @@
-/* Improved Slot Machine CSS */
 .slot-machine {
     text-align: center;
-    padding: 40px;
-    background: linear-gradient(to bottom, #f8ffae, #43c6ac); /* Vibrant gradient */
-    border-radius: 25px;
-    max-width: 650px;
-    margin: 40px auto;
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-    padding-bottom: 100px;
+    padding: 20px;
+    background: linear-gradient(to bottom, #ff9d00, #eacda3); 
+    border: 1px solid #ffd700;
+    border-radius: 20px;
+    max-width: 750px;
+    margin: auto;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    background-image: url('https://wallpapercave.com/wp/wp3132120.jpg'); 
 }
 
 .reels {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
+    margin: 30px 0;
 }
 
 .reel {
-    width: 120px;
-    height: 120px;
-    border: 6px solid #ffe47a; /* Gold border for luxury feel */
-    border-radius: 15px;
-    margin: 0 15px;
+    width: 130px;
+    height: 130px;
+    border: 4px solid #ffd700; 
+    border-radius: 10px;
+    margin: 0 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5em; /* Increase symbol size */
-    background-color: #ffffff;
-    box-shadow: inset 0 0 15px #000000;
-    transition: transform 0.6s ease-out;
+    font-size: 5em;
+    background-color: #fff;
+    box-shadow: inset 0 0 10px #000;
+    transition: transform 0.5s ease-out;
+    background-image: url('https://images.unsplash.com/photo-1517196084897-498e0abd7c2d?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90oy1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+    color: #ccac00; 
 }
 
 .spin-animation {
@@ -40,23 +43,59 @@
     100% { transform: rotateX(360deg); }
 }
 
+.controls {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+    margin-top: 20px;
+    color: white; 
+    font-weight: bolder;
+    text-shadow: 1px 1px 2px black; 
+}
+
+.message-container {
+    width: 100%; 
+    min-height: 60px; 
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6); 
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #ffd700;
+    text-shadow: 1px 1px 2px black;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 20px; 
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%; 
+}
+
 button {
     cursor: pointer;
-    padding: 15px 30px;
-    background-color: #fc4a1a; /* Exciting button colors */
-    background-image: linear-gradient(to bottom right, #f7b733, #fc4a1a);
+    padding: 10px 25px;
+    background-color: #c02d28; 
+    background-image: linear-gradient(to right, #d64541, #c02d28);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    font-size: 18px;
+    border-radius: 5px;
+    font-size: 16px;
     font-weight: bold;
-    text-transform: uppercase; /* Stylish font */
+    text-transform: uppercase;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
-    background-color: #f7b733;
+    background-color: #c02d28;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
@@ -64,49 +103,33 @@ button:active {
     transform: translateY(4px);
 }
 
-button:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-.controls {
-    position: relative; /* Changed from absolute to relative */
-    margin-top: 80px; /* Increase margin-top to provide space for an expanded message container */
-    display: flex;
-    justify-content: space-around; /* This will space out the controls evenly */
-    gap: 10px; /* You can adjust this gap for more fine-tuned spacing */
-    margin-top: 20px;
-}
-
-.message-container {
-    min-height: 60px; /* Allows container to grow */
-    padding: 10px 20px; /* Padding for text */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    background: #f8ffae; /* Match the slot machine background */
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    color: #2c3e50; /* Darker text for visibility */
-    font-size: 1em; /* Adjust text size if needed */
-    font-weight: bold;
-}
-
-
-/* Additional styles for the overall page background and title */
 body {
-    background-color: #ebf5fb; /* Light blue background for a soothing effect */
+    background-color: #282828; 
     font-family: 'Arial', sans-serif;
 }
 
 h1 {
-    color: #333;
-    text-shadow: 2px 2px 5px #aaa;
+    color: #ffd700;
+    text-shadow: 2px 2px 5px #333;
     text-align: center;
     margin-top: 0;
     font-size: 2.5em;
     padding: 20px;
+}
+
+.rules-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffd700;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.rules-button {
+    margin-top: 10px;
+    background-color: #ffc107;
 }

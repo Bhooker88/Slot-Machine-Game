@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './SlotMachine.css';
 
 const symbols = [
@@ -19,6 +18,25 @@ function SlotMachine() {
     const [spinning, setSpinning] = useState(false);
     const [freeSpins, setFreeSpins] = useState(0);
     const [winMessage, setWinMessage] = useState('Good Luck!');
+    const [showRules, setShowRules] = useState(false);
+    const [mute, setMute] = useState(false);
+    const spinSound = useRef(null);
+
+    useEffect(() => {
+        spinSound.current = new Audio('/audio/playful-casino-slot-machine-jackpot-3-183921.mp3'); 
+        spinSound.current.onerror = () => {
+            console.error("Failed to load audio file.");
+        };
+    }, []);
+
+    const toggleRules = () => {
+        setShowRules(!showRules);
+    };
+
+    const toggleMute = () => {
+        setMute(!mute);  
+    };
+
 
     const calculateConsecutiveSymbols = (reelSymbols, symbol) => {
         let currentConsecutive = 0;
@@ -26,7 +44,7 @@ function SlotMachine() {
             if (reelSymbols[i] === symbol) {
                 currentConsecutive++;
             } else {
-                break; // Stop counting if there is a break in the sequence
+                break; 
             }
         }
         return currentConsecutive;
@@ -50,6 +68,11 @@ function SlotMachine() {
             return;
         }
 
+        if (spinSound.current && !mute) {  
+            spinSound.current.currentTime = 0;
+            spinSound.current.play();
+        }
+
         setSpinning(true);
         if (freeSpins === 0) {
             setCredits(c => c - bet);
@@ -68,14 +91,14 @@ function SlotMachine() {
                     const finalSymbols = spins.map(reel => reel[19]);
                     setReels(finalSymbols);
                     evaluateSpin(finalSymbols);
-                }, 600); // Adjust based on animation timing
+                }, 600); 
             }
         }, 30);
     };
 
     const evaluateSpin = (finalSymbols) => {
       setSpinning(false);
-      calculateResult(finalSymbols); // calculateResult will handle setting the win message
+      calculateResult(finalSymbols); 
   };
   
   const calculateResult = (spunReels) => {
@@ -86,12 +109,10 @@ function SlotMachine() {
         if (symbolData.icon !== "7️⃣") {
             const consecutive = calculateConsecutiveSymbols(spunReels, symbolData.icon);
             if (symbolData.icon === "💎") {
-                // Diamonds pay from the first symbol, but only if they start from the first reel
                 if (consecutive >= 1 && spunReels[0] === "💎") {
                     payout += bet * symbolData.multipliers[consecutive - 1];
                 }
             } else {
-                // Other symbols need at least 2 consecutive symbols to count and must start from the first reel
                 if (consecutive >= 2) {
                     payout += bet * symbolData.multipliers[consecutive - 1];
                 }
@@ -137,6 +158,7 @@ function SlotMachine() {
                 ))}
             </div>
             <div className="controls">
+             <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
                 <button className={buttonClass(1)} onClick={spinReels} disabled={spinning || (credits < bet && freeSpins === 0)}>
                     Spin
                 </button>
@@ -148,10 +170,26 @@ function SlotMachine() {
                 </button>
                 <div>Credits: {credits}</div>
                 <div>Free Spins: {freeSpins}</div>
-                <div className="message-container">{winMessage}</div> {/* Display win message */}
+                <div className="message-container">{winMessage}</div> 
+                <button className="rules-button" onClick={toggleRules}>Show Rules</button>
             </div>
+            {showRules && (
+                <div className="rules-modal">
+                    <h2>Game Rules & Payouts</h2>
+                    <ul>
+                        <li>🍒, 🍋 - 2x for two, 4x for three, 6x for four, 8x for five</li>
+                        <li>🔔, 🍉, ⭐ - 6x for three, 10x for four, 15x for five</li>
+                        <li>💎 - 15x for two, 25x for three, 35x for four, 100x for five</li>
+                        <li>7️⃣ - No payout, but 3 or more triggers bonus free spins</li>
+                    </ul>
+                    <p>Bonus: 3 or more '7️⃣' symbols award 10 free spins. Retrigger during bonus spins awards 5 more.</p>
+                    <button onClick={toggleRules}>Close</button>
+                </div>
+            )}
         </div>
     );
+    
+    
 }
 
 export default SlotMachine;
