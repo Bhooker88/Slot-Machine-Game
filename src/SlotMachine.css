@@ -133,3 +133,76 @@ h1 {
     margin-top: 10px;
     background-color: #ffc107;
 }
+
+
+/* Smaller screens (mobile devices) */
+@media (max-width: 768px) {
+    .slot-machine {
+        padding: 10px;
+        max-width: 90%;  /* Adjust width for smaller screens */
+    }
+
+    .reel {
+        width: 80px;  /* Smaller reel size on mobile */
+        height: 80px;
+        font-size: 3em;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .button, .rules-button {
+        padding: 8px 20px;  /* Smaller padding for smaller screen */
+        font-size: 14px;
+    }
+
+    .message-container {
+        font-size: 0.8em;
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .reel {
+        width: 100px;  /* Adjust reel size for tablets */
+        height: 100px;
+        font-size: 4em;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    .button, .rules-button {
+        padding: 9px 22px;
+        font-size: 15px;
+    }
+
+    .message-container {
+        font-size: 0.9em;
+    }
+}
+
+/* Larger screens (desktops) */
+@media (min-width: 1025px) {
+    .slot-machine {
+        max-width: 750px;  /* Fixed width for large screens */
+    }
+
+    .reel {
+        width: 130px;  /* Larger reel size for desktop */
+        height: 130px;
+        font-size: 5em;
+    }
+
+    .button, .rules-button {
+        padding: 10px 25px;
+        font-size: 16px;
+    }
+
+    .message-container {
+        font-size: 1em;
+    }
+}
