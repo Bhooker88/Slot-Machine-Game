@@ -1,6 +1,6 @@
 import React from 'react';
-import SlotMachine from '../src/SlotMachine';
-import './SlotMachine.css';
+import SlotMachine from '../src/SlotMachine.js';
+
 
 function App() {
   return (
