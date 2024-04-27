@@ -12,7 +12,9 @@ const symbols = [
 ];
 
 function SlotMachine() {
-    const [reels, setReels] = useState(Array(5).fill(symbols[4].icon));
+    const [reels, setReels] = useState(Array(5).fill(symbols[5].icon));
+    const [reels2, setReels2] = useState(Array(5).fill(symbols[4].icon));
+    const [reels3, setReels3] = useState(Array(5).fill(symbols[3].icon));
     const [bet, setBet] = useState(1);
     const [credits, setCredits] = useState(1000);
     const [spinning, setSpinning] = useState(false);
@@ -37,30 +39,26 @@ function SlotMachine() {
         setMute(!mute);
     };
 
-
-    const calculateConsecutiveSymbols = (reelSymbols, symbol) => {
-        let currentConsecutive = 0;
-        for (let i = 0; i < reelSymbols.length; i++) {
-            if (reelSymbols[i] === symbol) {
-                currentConsecutive++;
-            } else {
-                break;
-            }
-        }
-        return currentConsecutive;
-    };
-
     const generateReels = () => {
-        const reels = [];
+        const newReels = [];
         for (let i = 0; i < 5; i++) {
             const reelSymbols = [];
             for (let j = 0; j < 20; j++) {
                 reelSymbols.push(symbols[Math.floor(Math.random() * symbols.length)].icon);
             }
-            reels.push(reelSymbols);
+            newReels.push(reelSymbols);
         }
-        return reels;
+        return newReels;
     };
+
+    const handleBetChange = (amount) => {
+        if (amount > credits) {
+            alert("You don't have enough credits.");
+        } else if (!spinning) {
+            setBet(amount);
+        }
+    };
+
 
     const spinReels = () => {
         if (credits < bet && freeSpins === 0) {
@@ -74,31 +72,54 @@ function SlotMachine() {
         }
 
         setSpinning(true);
-        if (freeSpins === 0) {
-            setCredits(c => c - bet);
-        } else {
-            setFreeSpins(spins => spins - 1);
-        }
+        const cost = freeSpins > 0 ? 0 : bet;
+        setCredits(c => c - cost);
+        setFreeSpins(f => f > 0 ? f - 1 : 0);
 
         const spins = generateReels();
+        const spins2 = generateReels();
+        const spins3 = generateReels();
         let currentIteration = 0;
         const spinInterval = setInterval(() => {
             setReels(spins.map(reel => reel[currentIteration % reel.length]));
+            setReels2(spins2.map(reel => reel[currentIteration % reel.length]));
+            setReels3(spins3.map(reel => reel[currentIteration % reel.length]));
             currentIteration++;
             if (currentIteration >= 20) {
                 clearInterval(spinInterval);
                 setTimeout(() => {
                     const finalSymbols = spins.map(reel => reel[19]);
+                    const finalSymbols2 = spins2.map(reel => reel[19]);
+                    const finalSymbols3 = spins3.map(reel => reel[19]);
                     setReels(finalSymbols);
-                    evaluateSpin(finalSymbols);
+                    setReels2(finalSymbols2);
+                    setReels3(finalSymbols3);
+                    evaluateSpin(finalSymbols, finalSymbols2, finalSymbols3);
                 }, 600);
             }
         }, 30);
     };
 
-    const evaluateSpin = (finalSymbols) => {
+    const evaluateSpin = (finalSymbols, finalSymbols2, finalSymbols3) => {
         setSpinning(false);
-        calculateResult(finalSymbols);
+        const { payout: payout1, freeSpins: freeSpins1 } = calculateResult(finalSymbols);
+        const { payout: payout2, freeSpins: freeSpins2 } = calculateResult(finalSymbols2);
+        const { payout: payout3, freeSpins: freeSpins3 } = calculateResult(finalSymbols3);
+        const totalPayout = payout1 + payout2 + payout3;
+        const totalFreeSpins = freeSpins1 + freeSpins2 + freeSpins3;
+        setCredits(c => c + totalPayout);
+        setFreeSpins(f => f + totalFreeSpins);
+        let message = `Total Win: ${totalPayout}`;
+        if (totalPayout === 0 && totalFreeSpins === 0) {
+            message = "Spin Again: Good Luck";
+        } else if (totalPayout > 0) {
+            if (totalFreeSpins > 0) {
+                message += ` | Bonus: ${totalFreeSpins} free spins awarded!`;
+            }
+        } else if (totalFreeSpins > 0) {
+            message = `Bonus: ${totalFreeSpins} free spins awarded!`;
+        }
+        setWinMessage(message);
     };
 
     const calculateResult = (spunReels) => {
@@ -106,52 +127,58 @@ function SlotMachine() {
         let sevenCount = spunReels.filter((icon) => icon === "7️⃣").length;
 
         symbols.forEach((symbolData) => {
-            if (symbolData.icon !== "7️⃣") {
-                const consecutive = calculateConsecutiveSymbols(spunReels, symbolData.icon);
-                if (symbolData.icon === "💎") {
-                    if (consecutive >= 1 && spunReels[0] === "💎") {
-                        payout += bet * symbolData.multipliers[consecutive - 1];
-                    }
-                } else {
-                    if (consecutive >= 2) {
-                        payout += bet * symbolData.multipliers[consecutive - 1];
-                    }
-                }
+            const consecutive = calculateConsecutiveSymbols(spunReels, symbolData.icon);
+            if (symbolData.icon === "💎" && consecutive >= 1 && spunReels[0] === "💎") {
+                payout += bet * symbolData.multipliers[consecutive - 1];
+            } else if (consecutive >= 2) {
+                payout += bet * symbolData.multipliers[consecutive - 1];
             }
         });
 
-        setCredits(c => c + payout);
-
+        // Determine free spins based on the count of "7️⃣"
+        let additionalSpins = 0;
         if (sevenCount >= 3) {
-            const additionalSpins = freeSpins > 0 ? 5 : 10;
-            setFreeSpins(spins => spins + additionalSpins);
-            setWinMessage(`Bonus activated! ${additionalSpins} free spins awarded!`);
-        } else if (payout > 0) {
-            setWinMessage(`You Win: ${payout}`);
-        } else {
-            setWinMessage('Spin Again: Good Luck');
+            additionalSpins = freeSpins > 0 ? 5 : 10;
         }
 
-        return payout;
+        return { payout, freeSpins: additionalSpins };
     };
 
+    const buttonClass = (amount) => {
+        return `button ${spinning || bet === amount ? 'button-disabled' : ''} ${bet === amount ? 'button-active' : ''}`;
+    };
 
-    const handleBetChange = (amount) => {
-        if (amount > credits) {
-            alert("You don't have enough credits.");
-        } else if (!spinning) {
-            setBet(amount);
+    const calculateConsecutiveSymbols = (reelSymbols, symbol) => {
+        let currentConsecutive = 0;
+        for (let i = 0; i < reelSymbols.length; i++) {
+            if (reelSymbols[i] === symbol) {
+                currentConsecutive++;
+            } else {
+                break;
+            }
         }
+        return currentConsecutive;
     };
 
-    const buttonClass = (amount) => (
-        `button ${spinning || bet === amount ? 'button-disabled' : ''} ${bet === amount ? 'button-active' : ''}`
-    );
 
     return (
         <div className="slot-machine">
             <div className="reels">
                 {reels.map((symbol, index) => (
+                    <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
+                        {symbol}
+                    </div>
+                ))}
+            </div>
+            <div className="reels">
+                {reels2.map((symbol, index) => (
+                    <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
+                        {symbol}
+                    </div>
+                ))}
+            </div>
+            <div className="reels">
+                {reels3.map((symbol, index) => (
                     <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
                         {symbol}
                     </div>
@@ -167,6 +194,9 @@ function SlotMachine() {
                 </button>
                 <button className={buttonClass(10)} onClick={() => handleBetChange(10)} disabled={spinning || bet === 10}>
                     Bet 10
+                </button>
+                <button className={buttonClass(20)} onClick={() => handleBetChange(20)} disabled={spinning || 20 > credits}>
+                    Bet 20
                 </button>
                 <div>Credits: {credits}</div>
                 <div>Free Spins: {freeSpins}</div>
@@ -189,8 +219,6 @@ function SlotMachine() {
             )}
         </div>
     );
-
-
 }
 
 export default SlotMachine;
