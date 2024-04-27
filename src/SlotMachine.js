@@ -23,7 +23,7 @@ function SlotMachine() {
     const spinSound = useRef(null);
 
     useEffect(() => {
-        spinSound.current = new Audio('/audio/playful-casino-slot-machine-jackpot-3-183921.mp3'); 
+        spinSound.current = new Audio('/audio/playful-casino-slot-machine-jackpot-3-183921.mp3');
         spinSound.current.onerror = () => {
             console.error("Failed to load audio file.");
         };
@@ -34,7 +34,7 @@ function SlotMachine() {
     };
 
     const toggleMute = () => {
-        setMute(!mute);  
+        setMute(!mute);
     };
 
 
@@ -44,7 +44,7 @@ function SlotMachine() {
             if (reelSymbols[i] === symbol) {
                 currentConsecutive++;
             } else {
-                break; 
+                break;
             }
         }
         return currentConsecutive;
@@ -68,7 +68,7 @@ function SlotMachine() {
             return;
         }
 
-        if (spinSound.current && !mute) {  
+        if (spinSound.current && !mute) {
             spinSound.current.currentTime = 0;
             spinSound.current.play();
         }
@@ -91,49 +91,49 @@ function SlotMachine() {
                     const finalSymbols = spins.map(reel => reel[19]);
                     setReels(finalSymbols);
                     evaluateSpin(finalSymbols);
-                }, 600); 
+                }, 600);
             }
         }, 30);
     };
 
     const evaluateSpin = (finalSymbols) => {
-      setSpinning(false);
-      calculateResult(finalSymbols); 
-  };
-  
-  const calculateResult = (spunReels) => {
-    let payout = 0;
-    let sevenCount = spunReels.filter((icon) => icon === "7️⃣").length;
+        setSpinning(false);
+        calculateResult(finalSymbols);
+    };
 
-    symbols.forEach((symbolData) => {
-        if (symbolData.icon !== "7️⃣") {
-            const consecutive = calculateConsecutiveSymbols(spunReels, symbolData.icon);
-            if (symbolData.icon === "💎") {
-                if (consecutive >= 1 && spunReels[0] === "💎") {
-                    payout += bet * symbolData.multipliers[consecutive - 1];
-                }
-            } else {
-                if (consecutive >= 2) {
-                    payout += bet * symbolData.multipliers[consecutive - 1];
+    const calculateResult = (spunReels) => {
+        let payout = 0;
+        let sevenCount = spunReels.filter((icon) => icon === "7️⃣").length;
+
+        symbols.forEach((symbolData) => {
+            if (symbolData.icon !== "7️⃣") {
+                const consecutive = calculateConsecutiveSymbols(spunReels, symbolData.icon);
+                if (symbolData.icon === "💎") {
+                    if (consecutive >= 1 && spunReels[0] === "💎") {
+                        payout += bet * symbolData.multipliers[consecutive - 1];
+                    }
+                } else {
+                    if (consecutive >= 2) {
+                        payout += bet * symbolData.multipliers[consecutive - 1];
+                    }
                 }
             }
+        });
+
+        setCredits(c => c + payout);
+
+        if (sevenCount >= 3) {
+            const additionalSpins = freeSpins > 0 ? 5 : 10;
+            setFreeSpins(spins => spins + additionalSpins);
+            setWinMessage(`Bonus activated! ${additionalSpins} free spins awarded!`);
+        } else if (payout > 0) {
+            setWinMessage(`You Win: ${payout}`);
+        } else {
+            setWinMessage('Spin Again: Good Luck');
         }
-    });
 
-    setCredits(c => c + payout);
-
-    if (sevenCount >= 3) {
-        const additionalSpins = freeSpins > 0 ? 5 : 10;
-        setFreeSpins(spins => spins + additionalSpins);
-        setWinMessage(`Bonus activated! ${additionalSpins} free spins awarded!`);
-    } else if (payout > 0) {
-        setWinMessage(`You Win: ${payout}`);
-    } else {
-        setWinMessage('Spin Again: Good Luck');
-    }
-
-    return payout;
-};
+        return payout;
+    };
 
 
     const handleBetChange = (amount) => {
@@ -158,7 +158,7 @@ function SlotMachine() {
                 ))}
             </div>
             <div className="controls">
-             <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
+                <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
                 <button className={buttonClass(1)} onClick={spinReels} disabled={spinning || (credits < bet && freeSpins === 0)}>
                     Spin
                 </button>
@@ -170,7 +170,7 @@ function SlotMachine() {
                 </button>
                 <div>Credits: {credits}</div>
                 <div>Free Spins: {freeSpins}</div>
-                <div className="message-container">{winMessage}</div> 
+                <div className="message-container">{winMessage}</div>
                 <button className="rules-button" onClick={toggleRules}>Show Rules</button>
             </div>
             {showRules && (
@@ -178,9 +178,10 @@ function SlotMachine() {
                     <h2>Game Rules & Payouts</h2>
                     <ul>
                         <li>🍒, 🍋 - 2x for two, 4x for three, 6x for four, 8x for five</li>
-                        <li>🔔, 🍉, ⭐ - 6x for three, 10x for four, 15x for five</li>
-                        <li>💎 - 15x for two, 25x for three, 35x for four, 100x for five</li>
-                        <li>7️⃣ - No payout, but 3 or more triggers bonus free spins</li>
+                        <li>🔔 - 6x for two, 10x for three, 15x for four, 20x for five</li>
+                        <li>🍉, ⭐ - 4x for two, 6x for three, 10x for four, 16x for five</li>
+                        <li>💎 - 5x for one, 15x for two, 25x for three, 35x for four, 100x for five</li>
+                        <li>7️⃣ - No payout, but 3 or more scattered triggers bonus free spins</li>
                     </ul>
                     <p>Bonus: 3 or more '7️⃣' symbols award 10 free spins. Retrigger during bonus spins awards 5 more.</p>
                     <button onClick={toggleRules}>Close</button>
@@ -188,8 +189,8 @@ function SlotMachine() {
             )}
         </div>
     );
-    
-    
+
+
 }
 
 export default SlotMachine;
