@@ -85,7 +85,7 @@ function SlotMachine() {
             setReels2(spins2.map(reel => reel[currentIteration % reel.length]));
             setReels3(spins3.map(reel => reel[currentIteration % reel.length]));
             currentIteration++;
-            if (currentIteration >= 20) {
+            if (currentIteration >= 40) {
                 clearInterval(spinInterval);
                 setTimeout(() => {
                     const finalSymbols = spins.map(reel => reel[19]);
@@ -95,9 +95,9 @@ function SlotMachine() {
                     setReels2(finalSymbols2);
                     setReels3(finalSymbols3);
                     evaluateSpin(finalSymbols, finalSymbols2, finalSymbols3);
-                }, 600);
+                }, 50);
             }
-        }, 30);
+        }, 50);
     };
 
     const evaluateSpin = (finalSymbols, finalSymbols2, finalSymbols3) => {
@@ -135,7 +135,7 @@ function SlotMachine() {
             }
         });
 
-        // Determine free spins based on the count of "7️⃣"
+        
         let additionalSpins = 0;
         if (sevenCount >= 3) {
             additionalSpins = freeSpins > 0 ? 5 : 10;
@@ -144,9 +144,6 @@ function SlotMachine() {
         return { payout, freeSpins: additionalSpins };
     };
 
-    const buttonClass = (amount) => {
-        return `button ${spinning || bet === amount ? 'button-disabled' : ''} ${bet === amount ? 'button-active' : ''}`;
-    };
 
     const calculateConsecutiveSymbols = (reelSymbols, symbol) => {
         let currentConsecutive = 0;
@@ -160,6 +157,10 @@ function SlotMachine() {
         return currentConsecutive;
     };
 
+    const buttonClass = (amount) => {
+        const isDisabled = spinning || (credits < amount && freeSpins === 0);
+        return `button ${isDisabled ? 'button-disabled' : ''} ${bet === amount ? 'button-active' : ''}`;
+    };
 
     return (
         <div className="slot-machine">
@@ -186,16 +187,19 @@ function SlotMachine() {
             </div>
             <div className="controls">
                 <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
-                <button className={buttonClass(1)} onClick={spinReels} disabled={spinning || (credits < bet && freeSpins === 0)}>
+                <button onClick={spinReels} disabled={spinning || credits < bet && freeSpins === 0}>
                     Spin
                 </button>
-                <button className={buttonClass(5)} onClick={() => handleBetChange(5)} disabled={spinning || bet === 5}>
+                <button className={buttonClass(1)} onClick={() => handleBetChange(1)} disabled={spinning || credits < 1}>
+                    Bet 1
+                </button>
+                <button className={buttonClass(5)} onClick={() => handleBetChange(5)}>
                     Bet 5
                 </button>
-                <button className={buttonClass(10)} onClick={() => handleBetChange(10)} disabled={spinning || bet === 10}>
+                <button className={buttonClass(10)} onClick={() => handleBetChange(10)}>
                     Bet 10
                 </button>
-                <button className={buttonClass(20)} onClick={() => handleBetChange(20)} disabled={spinning || 20 > credits}>
+                <button className={buttonClass(20)} onClick={() => handleBetChange(20)}>
                     Bet 20
                 </button>
                 <div>Credits: {credits}</div>

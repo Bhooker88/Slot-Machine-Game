@@ -35,7 +35,7 @@
 }
 
 .spin-animation {
-    animation: spin 0.6s ease-out infinite;
+    animation: spin 2s ease-out infinite;
 }
 
 @keyframes spin {
@@ -103,6 +103,18 @@ button:active {
     transform: translateY(4px);
 }
 
+.button-disabled {
+    opacity: 0.9; 
+    cursor: default; 
+    pointer-events: none; 
+}
+
+.button-active {
+    background-color: #6e6e6e; 
+    color: #666; 
+    cursor: not-allowed;
+}
+
 body {
     background-color: #282828; 
     font-family: 'Arial', sans-serif;
@@ -139,11 +151,11 @@ h1 {
 @media (max-width: 768px) {
     .slot-machine {
         padding: 10px;
-        max-width: 90%;  /* Adjust width for smaller screens */
+        max-width: 90%; 
     }
 
     .reel {
-        width: 80px;  /* Smaller reel size on mobile */
+        width: 80px;  
         height: 80px;
         font-size: 3em;
     }
@@ -154,22 +166,22 @@ h1 {
     }
 
     .button, .rules-button {
-        padding: 8px 20px;  /* Smaller padding for smaller screen */
+        padding: 8px 20px; 
         font-size: 14px;
     }
 
     .message-container {
         font-size: 0.8em;
-        padding: 5px 10px; /* Adjusted padding */
-        width: 100%; /* Full width to prevent overflow */
-        box-sizing: border-box; /* Include padding in width calculation */
+        padding: 5px 10px; 
+        width: 100%; 
+        box-sizing: border-box; 
     }
 }
 
 /* Medium screens (tablets) */
 @media (min-width: 769px) and (max-width: 1024px) {
     .reel {
-        width: 100px;  /* Adjust reel size for tablets */
+        width: 100px;  
         height: 100px;
         font-size: 4em;
     }
@@ -185,20 +197,20 @@ h1 {
 
     .message-container {
         font-size: 0.9em;
-        padding: 8px 15px; /* Slightly larger padding than mobile */
-        width: 95%; /* Adjust width to give some breathing room */
-        box-sizing: border-box; /* Include padding in width calculation */
+        padding: 8px 15px; 
+        width: 95%; 
+        box-sizing: border-box;
     }
 }
 
 /* Larger screens (desktops) */
 @media (min-width: 1025px) {
     .slot-machine {
-        max-width: 750px;  /* Fixed width for large screens */
+        max-width: 750px; 
     }
 
     .reel {
-        width: 130px;  /* Larger reel size for desktop */
+        width: 130px;  
         height: 130px;
         font-size: 5em;
     }
@@ -210,51 +222,51 @@ h1 {
 
     .message-container {
         font-size: 1em;
-        padding: 10px 20px; /* Ample padding for desktop visibility */
-        width: 80%; /* Less than 100% to maintain a manageable size */
-        box-sizing: border-box; /* Include padding in width calculation */
-        margin: auto; /* Center the container on large screens */
+        padding: 10px 20px; 
+        width: 80%; 
+        box-sizing: border-box; 
+        margin: auto; 
     }
 }
 
 @media (max-width: 480px) {
     .slot-machine {
         padding: 5px;
-        max-width: 100%;  /* Use full width for very small screens */
-        background-size: cover; /* Ensure the background covers the reduced area */
+        max-width: 100%;  
+        background-size: cover; 
     }
 
     .reels {
-        margin: 20px 0; /* Reduced margin to save space */
+        margin: 20px 0; 
     }
 
     .reel {
-        width: 60px;  /* Further reduce reel size for very small screens */
+        width: 60px; 
         height: 60px;
-        margin: 0 5px; /* Reduce margin between reels */
-        font-size: 2em; /* Smaller icons */
-        border-width: 3px; /* Smaller border for the reels */
+        margin: 0 5px;
+        font-size: 2em;
+        border-width: 3px; 
     }
 
     .controls {
         flex-direction: column;
         align-items: center;
-        gap: 5px; /* Reduce the gap to make better use of space */
+        gap: 5px; 
     }
 
     button {
-        padding: 6px 15px; /* Smaller buttons to fit the interface */
-        font-size: 12px; /* Smaller font size for readability on small devices */
+        padding: 6px 15px; 
+        font-size: 12px; 
     }
 
     .message-container {
-        font-size: 0.7em; /* Reduce font size to fit smaller screens */
-        padding: 5px 10px; /* Adjust padding to ensure content fits within container */
-        width: 100%; /* Ensure it does not exceed the screen width */
-        box-sizing: border-box; /* Include padding and border in the element's total width */
+        font-size: 0.7em; 
+        padding: 5px 10px; 
+        width: 100%; 
+        box-sizing: border-box; 
     }
 
     .rules-button, .button {
-        width: 90%; /* Make buttons wider to fill the space */
+        width: 90%; 
     }
 }
