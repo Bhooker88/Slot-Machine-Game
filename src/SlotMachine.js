@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import './SlotMachine.css';
 
 const symbols = [
-    { icon: '🍒', multipliers: [0, 2, 4, 6, 8] },
-    { icon: '🍋', multipliers: [0, 2, 4, 6, 8] },
-    { icon: '🔔', multipliers: [0, 6, 10, 15, 20] },
-    { icon: '🍉', multipliers: [0, 4, 6, 10, 16] },
-    { icon: '⭐', multipliers: [0, 4, 6, 10, 16] },
-    { icon: '💎', multipliers: [5, 15, 25, 35, 100] },
+    { icon: '🍒', multipliers: [0, 0, 4, 8, 15] },
+    { icon: '🍋', multipliers: [0, 0, 4, 8, 15] },
+    { icon: '🔔', multipliers: [0, 0, 10, 15, 20] },
+    { icon: '🍉', multipliers: [0, 2, 6, 10, 16] },
+    { icon: '⭐', multipliers: [0, 2, 6, 10, 16] },
+    { icon: '💎', multipliers: [1, 2, 10, 20, 100] },
     { icon: '7️⃣', multipliers: [0, 0, 0, 0, 0] },
 ];
 
@@ -58,7 +58,6 @@ function SlotMachine() {
             setBet(amount);
         }
     };
-
 
     const spinReels = () => {
         if (credits < bet && freeSpins === 0) {
@@ -168,6 +167,7 @@ function SlotMachine() {
                 {reels.map((symbol, index) => (
                     <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
                         {symbol}
+                        <div className="payline"></div>
                     </div>
                 ))}
             </div>
@@ -175,6 +175,7 @@ function SlotMachine() {
                 {reels2.map((symbol, index) => (
                     <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
                         {symbol}
+                            <div className="payline"></div>
                     </div>
                 ))}
             </div>
@@ -182,6 +183,7 @@ function SlotMachine() {
                 {reels3.map((symbol, index) => (
                     <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
                         {symbol}
+                        <div className="payline"></div>
                     </div>
                 ))}
             </div>
@@ -211,10 +213,10 @@ function SlotMachine() {
                 <div className="rules-modal">
                     <h2>Game Rules & Payouts</h2>
                     <ul>
-                        <li>🍒, 🍋 - 2x for two, 4x for three, 6x for four, 8x for five</li>
-                        <li>🔔 - 6x for two, 10x for three, 15x for four, 20x for five</li>
-                        <li>🍉, ⭐ - 4x for two, 6x for three, 10x for four, 16x for five</li>
-                        <li>💎 - 5x for one, 15x for two, 25x for three, 35x for four, 100x for five</li>
+                        <li>🍒, 🍋 - 4x for three, 8x for four, 15x for five</li>
+                        <li>🔔 - 10x for three, 15x for four, 20x for five</li>
+                        <li>🍉, ⭐ - 2x for two, 6x for three, 10x for four, 16x for five</li>
+                        <li>💎 - 1x for one, 2x for two, 10x for three, 20x for four, 100x for five</li>
                         <li>7️⃣ - No payout, but 3 or more scattered triggers bonus free spins</li>
                     </ul>
                     <p>Bonus: 3 or more '7️⃣' symbols award 10 free spins. Retrigger during bonus spins awards 5 more.</p>
