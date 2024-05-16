@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "dotenv": "^16.4.5",
+    "firebase": "^10.12.0",
     "javascript": "^1.0.0",
     "node": "^18.20.2",
     "react": "^18.2.0",

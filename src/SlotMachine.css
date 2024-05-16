@@ -155,6 +155,32 @@ h1 {
     transition: opacity 0.3s;
 }
 
+.auth-form {
+    text-align: center;
+    margin-top: 20px;
+    color: white;
+}
+
+.auth-form input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 80%;
+    max-width: 300px;
+}
+
+.auth-form button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.auth-form p {
+    color: red;
+    margin-top: 10px;
+}
+
 
 /* Smaller screens (mobile devices) */
 @media (max-width: 768px) {

@@ -1,4 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth, db } from './firebase';
+import AuthForm from './AuthForm';
 import './SlotMachine.css';
 
 const symbols = [
@@ -16,12 +20,13 @@ function SlotMachine() {
     const [reels2, setReels2] = useState(Array(5).fill(symbols[4].icon));
     const [reels3, setReels3] = useState(Array(5).fill(symbols[3].icon));
     const [bet, setBet] = useState(1);
-    const [credits, setCredits] = useState(1000);
+    const [credits, setCredits] = useState(0);
     const [spinning, setSpinning] = useState(false);
     const [freeSpins, setFreeSpins] = useState(0);
     const [winMessage, setWinMessage] = useState('Good Luck!');
     const [showRules, setShowRules] = useState(false);
     const [mute, setMute] = useState(false);
+    const [user, setUser] = useState(null);
     const spinSound = useRef(null);
 
     useEffect(() => {
@@ -29,7 +34,43 @@ function SlotMachine() {
         spinSound.current.onerror = () => {
             console.error("Failed to load audio file.");
         };
+
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                setUser(user);
+                console.log('User authenticated:', user.uid);
+                try {
+                    const userDoc = await getDoc(doc(collection(db, 'users'), user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        console.log('User document exists. Credits:', userData.credits);
+                        setCredits(userData.credits || 0);
+                    } else {
+                        console.log('User document does not exist. Setting initial credits.');
+                        await setDoc(doc(collection(db, 'users'), user.uid), { credits: 1000 });
+                        setCredits(1000);
+                    }
+                } catch (error) {
+                    console.error("Error getting document:", error);
+                    alert("Failed to load credits. Please check your connection.");
+                }
+            } else {
+                setUser(null);
+                setCredits(0);
+            }
+        });
+
+        return () => unsubscribe();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            console.log('Updating user credits in Firestore:', credits);
+            if (credits !== 0) { // Only update Firestore if credits are not zero to avoid resetting
+                updateDoc(doc(collection(db, 'users'), user.uid), { credits });
+            }
+        }
+    }, [credits, user]);
 
     const toggleRules = () => {
         setShowRules(!showRules);
@@ -143,7 +184,6 @@ function SlotMachine() {
         return { payout, freeSpins: additionalSpins };
     };
 
-
     const calculateConsecutiveSymbols = (reelSymbols, symbol) => {
         let currentConsecutive = 0;
         for (let i = 0; i < reelSymbols.length; i++) {
@@ -161,67 +201,87 @@ function SlotMachine() {
         return `button ${isDisabled ? 'button-disabled' : ''} ${bet === amount ? 'button-active' : ''}`;
     };
 
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            setUser(null);
+            setCredits(0);
+        }).catch((error) => {
+            console.error('Error logging out:', error);
+        });
+    };
+
     return (
         <div className="slot-machine">
-            <div className="reels">
-                {reels.map((symbol, index) => (
-                    <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
-                        {symbol}
-                        <div className="payline"></div>
+            {!user ? (
+                <AuthForm onUserAuthenticated={(user, initialCredits) => {
+                    console.log('User authenticated in SlotMachine:', user.uid, initialCredits);
+                    setUser(user);
+                    setCredits(initialCredits);
+                }} />
+            ) : (
+                <>
+                    <div className="reels">
+                        {reels.map((symbol, index) => (
+                            <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
+                                {symbol}
+                                <div className="payline"></div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-            <div className="reels">
-                {reels2.map((symbol, index) => (
-                    <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
-                        {symbol}
-                            <div className="payline"></div>
+                    <div className="reels">
+                        {reels2.map((symbol, index) => (
+                            <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
+                                {symbol}
+                                <div className="payline"></div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-            <div className="reels">
-                {reels3.map((symbol, index) => (
-                    <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
-                        {symbol}
-                        <div className="payline"></div>
+                    <div className="reels">
+                        {reels3.map((symbol, index) => (
+                            <div key={index} className={`reel ${spinning ? "spin" : ""}`}>
+                                {symbol}
+                                <div className="payline"></div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-            <div className="controls">
-                <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
-                <button onClick={spinReels} disabled={spinning || credits < bet && freeSpins === 0}>
-                    Spin
-                </button>
-                <button className={buttonClass(1)} onClick={() => handleBetChange(1)} disabled={spinning || credits < 1}>
-                    Bet 1
-                </button>
-                <button className={buttonClass(5)} onClick={() => handleBetChange(5)}>
-                    Bet 5
-                </button>
-                <button className={buttonClass(10)} onClick={() => handleBetChange(10)}>
-                    Bet 10
-                </button>
-                <button className={buttonClass(20)} onClick={() => handleBetChange(20)}>
-                    Bet 20
-                </button>
-                <div>Credits: {credits}</div>
-                <div>Free Spins: {freeSpins}</div>
-                <div className="message-container">{winMessage}</div>
-                <button className="rules-button" onClick={toggleRules}>Show Rules</button>
-            </div>
-            {showRules && (
-                <div className="rules-modal">
-                    <h2>Game Rules & Payouts</h2>
-                    <ul>
-                        <li>🍒, 🍋 - 4x for three, 8x for four, 15x for five</li>
-                        <li>🔔 - 10x for three, 15x for four, 20x for five</li>
-                        <li>🍉, ⭐ - 2x for two, 6x for three, 10x for four, 16x for five</li>
-                        <li>💎 - 1x for one, 2x for two, 10x for three, 20x for four, 100x for five</li>
-                        <li>7️⃣ - No payout, but 3 or more scattered triggers bonus free spins</li>
-                    </ul>
-                    <p>Bonus: 3 or more '7️⃣' symbols award 10 free spins. Retrigger during bonus spins awards 5 more.</p>
-                    <button onClick={toggleRules}>Close</button>
-                </div>
+                    <div className="controls">
+                        <button onClick={toggleMute}>{mute ? 'Unmute' : 'Mute'}</button>
+                        <button onClick={spinReels} disabled={spinning || credits < bet && freeSpins === 0}>
+                            Spin
+                        </button>
+                        <button className={buttonClass(1)} onClick={() => handleBetChange(1)} disabled={spinning || credits < 1}>
+                            Bet 1
+                        </button>
+                        <button className={buttonClass(5)} onClick={() => handleBetChange(5)}>
+                            Bet 5
+                        </button>
+                        <button className={buttonClass(10)} onClick={() => handleBetChange(10)}>
+                            Bet 10
+                        </button>
+                        <button className={buttonClass(20)} onClick={() => handleBetChange(20)}>
+                            Bet 20
+                        </button>
+                        <div>Credits: {credits}</div>
+                        <div>Free Spins: {freeSpins}</div>
+                        <div className="message-container">{winMessage}</div>
+                        <button className="rules-button" onClick={toggleRules}>Show Rules</button>
+                        <button className="logout-button" onClick={handleLogout}>Logout</button>
+                    </div>
+                    {showRules && (
+                        <div className="rules-modal">
+                            <h2>Game Rules & Payouts</h2>
+                            <ul>
+                                <li>🍒, 🍋 - 4x for three, 8x for four, 15x for five</li>
+                                <li>🔔 - 10x for three, 15x for four, 20x for five</li>
+                                <li>🍉, ⭐ - 2x for two, 6x for three, 10x for four, 16x for five</li>
+                                <li>💎 - 1x for one, 2x for two, 10x for three, 20x for four, 100x for five</li>
+                                <li>7️⃣ - No payout, but 3 or more scattered triggers bonus free spins</li>
+                            </ul>
+                            <p>Bonus: 3 or more '7️⃣' symbols award 10 free spins. Retrigger during bonus spins awards 5 more.</p>
+                            <button onClick={toggleRules}>Close</button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
