@@ -65,7 +65,6 @@ function SlotMachine() {
 
     useEffect(() => {
         if (user) {
-            console.log('Updating user credits in Firestore:', credits);
             if (credits !== 0) { // Only update Firestore if credits are not zero to avoid resetting
                 updateDoc(doc(collection(db, 'users'), user.uid), { credits });
             }
